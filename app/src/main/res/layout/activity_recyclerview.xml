@@ -7,7 +7,7 @@
     tools:context="education.pappayaed.com.customcalendarview.recyclercalendar.RecyclerviewActivity">
 
 
-    <education.pappayaed.com.customcalendarview.recyclercalendar.CalendarCustomViewRecycler
+    <calendar.android.com.customcalendar.CalendarCustomViewRecycler
         android:id="@+id/custom_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

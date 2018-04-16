@@ -1,8 +1,9 @@
-package education.pappayaed.com.customcalendarview.recyclercalendar;
+package calendar.android.com.customcalendar;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,9 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import education.pappayaed.com.customcalendarview.EventObjects;
-import education.pappayaed.com.customcalendarview.R;
-
 /**
  * Created by yasar on 13/4/18.
  */
@@ -29,14 +27,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     private List<EventObjects> allEvents;
     private Context context;
     private EventHighlight eventHighlight;
+    private onItemClick mOnItemClick;
 
-    public RecyclerAdapter(Context context, List<Date> monthlyDates, Calendar currentDate, List<EventObjects> allEvents, EventHighlight eventHighlight) {
+    public RecyclerAdapter(Context context, List<Date> monthlyDates, Calendar currentDate, List<EventObjects> allEvents, EventHighlight eventHighlight, onItemClick onItemClick) {
 
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
         this.allEvents = allEvents;
         this.context = context;
         this.eventHighlight = eventHighlight;
+        this.mOnItemClick = onItemClick;
     }
 
     @Override
@@ -47,16 +47,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         return rcv;
     }
 
+    public void updateEvents(List<EventObjects> allEvents) {
+        this.allEvents.clear();
+        this.allEvents = allEvents;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
 
 
         Date mDate = monthlyDates.get(position);
         Calendar dateCal = Calendar.getInstance();
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
         dateCal.setTime(mDate);
 
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
 
         int dayValue = dateCal.get(Calendar.DAY_OF_MONTH);
         int displayMonth = dateCal.get(Calendar.MONTH) + 1;
@@ -122,12 +128,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         shape.setShape(GradientDrawable.OVAL);
         shape.setColor(color);
         shape.setStroke(2, color);
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackgroundDrawable(shape);
-        } else {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(shape);
+        } else {
+            view.setBackgroundDrawable(shape);
         }
+
     }
 
     @Override
@@ -160,7 +167,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 //                    break;
 //            }
 
-            Toast.makeText(view.getContext(), "Clicked Country Position = " + getPosition(), Toast.LENGTH_SHORT).show();
+            if (mOnItemClick != null) {
+                mOnItemClick.onItemClick(view, getAdapterPosition(), monthlyDates.get(getAdapterPosition()));
+            }
+
         }
     }
+
 }

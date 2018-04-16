@@ -20,8 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import education.pappayaed.com.customcalendarview.EventObjects;
+import calendar.android.com.customcalendar.EventObjects;
 import education.pappayaed.com.customcalendarview.R;
+
 
 /**
  * Created by yasar on 13/4/18.

@@ -1,4 +1,4 @@
-package education.pappayaed.com.customcalendarview;
+package calendar.android.com.customcalendar;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;

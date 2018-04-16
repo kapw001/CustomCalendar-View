@@ -1,4 +1,4 @@
-package education.pappayaed.com.customcalendarview.recyclercalendar;
+package calendar.android.com.customcalendar;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,15 +21,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import education.pappayaed.com.customcalendarview.EventObjects;
-import education.pappayaed.com.customcalendarview.R;
-import education.pappayaed.com.customcalendarview.calendarviewgridview.Utils;
-
 /**
  * Created by yasar on 13/4/18.
  */
 
-public class CalendarCustomViewRecycler extends LinearLayout {
+public class CalendarCustomViewRecycler extends LinearLayout implements onItemClick {
+
     private static final String TAG = CalendarCustomViewRecycler.class.getSimpleName();
     private ImageView previousButton, nextButton;
     private TextView currentDate;
@@ -40,7 +38,11 @@ public class CalendarCustomViewRecycler extends LinearLayout {
     private Context context;
     private RecyclerAdapter mAdapter;
 
+    private onItemClick onItemClick;
+
     private EventHighlight eventHighlight = EventHighlight.CIRCLE;
+
+    private List<EventObjects> eventList = new ArrayList<>();
 
     public CalendarCustomViewRecycler(Context context) {
         super(context);
@@ -80,6 +82,32 @@ public class CalendarCustomViewRecycler extends LinearLayout {
         calendarGridView.addItemDecoration(new ItemOffsetDecoration(1));
 
 
+    }
+
+    public void setOnItemClick(onItemClick onItemClick) {
+        this.onItemClick = onItemClick;
+    }
+
+    @Override
+    public void onItemClick(View view, int position, Object o) {
+
+//        Toast.makeText(context, "" + ((Date) o).getDate(), Toast.LENGTH_SHORT).show();
+
+        if (onItemClick != null) {
+            onItemClick.onItemClick(view, position, o);
+        } else {
+            Log.e(TAG, "onItemClick: There is no onItemClick Listener ");
+        }
+
+
+    }
+
+    public void setEvents(List<EventObjects> eventsList) {
+
+        this.eventList.clear();
+        this.eventList = eventsList;
+
+        mAdapter.updateEvents(this.eventList);
     }
 
     public class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
@@ -126,18 +154,19 @@ public class CalendarCustomViewRecycler extends LinearLayout {
 
     }
 
+
     private void setUpCalendarAdapter() {
         List<Date> dayValueInCells = new ArrayList<Date>();
 
-        List<EventObjects> mEvents = new ArrayList<>();
+//        List<EventObjects> mEvents = new ArrayList<>();
 
-        EventObjects eventObjects = new EventObjects(3, "Test", Utils.convertStringToDate("14-04-2018"), Color.RED);
-
-        mEvents.add(eventObjects);
-
-        EventObjects eventObjects1 = new EventObjects(4, "sdfsdfsest", Utils.convertStringToDate("13-04-2018"), Color.BLUE);
-
-        mEvents.add(eventObjects1);
+//        EventObjects eventObjects = new EventObjects(3, "Test", CalendarUtils.convertStringToDate("14-04-2018"), Color.RED);
+//
+//        mEvents.add(eventObjects);
+//
+//        EventObjects eventObjects1 = new EventObjects(4, "sdfsdfsest", CalendarUtils.convertStringToDate("13-04-2018"), Color.BLUE);
+//
+//        mEvents.add(eventObjects1);
 
         Calendar mCal = (Calendar) cal.clone();
         mCal.set(Calendar.DAY_OF_MONTH, 1);
@@ -151,7 +180,7 @@ public class CalendarCustomViewRecycler extends LinearLayout {
         String sDate = formatter.format(cal.getTime());
         currentDate.setText(sDate);
 
-        mAdapter = new RecyclerAdapter(context, dayValueInCells, cal, mEvents, eventHighlight);
+        mAdapter = new RecyclerAdapter(context, dayValueInCells, cal, this.eventList, eventHighlight, this);
 
         float scalefactor = getResources().getDisplayMetrics().density * 100;
 

@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import education.pappayaed.com.customcalendarview.EventObjects;
+import calendar.android.com.customcalendar.EventObjects;
 import education.pappayaed.com.customcalendarview.R;
 
 /**

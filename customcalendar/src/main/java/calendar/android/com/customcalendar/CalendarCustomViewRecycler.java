@@ -156,7 +156,7 @@ public class CalendarCustomViewRecycler extends LinearLayout implements onItemCl
 
 
     private void setUpCalendarAdapter() {
-        List<Date> dayValueInCells = new ArrayList<Date>();
+        List<CalendarModel> dayValueInCells = new ArrayList<CalendarModel>();
 
 //        List<EventObjects> mEvents = new ArrayList<>();
 
@@ -173,7 +173,11 @@ public class CalendarCustomViewRecycler extends LinearLayout implements onItemCl
         int firstDayOfTheMonth = mCal.get(Calendar.DAY_OF_WEEK) - 1;
         mCal.add(Calendar.DAY_OF_MONTH, -firstDayOfTheMonth);
         while (dayValueInCells.size() < MAX_CALENDAR_COLUMN) {
-            dayValueInCells.add(mCal.getTime());
+
+            CalendarModel calendarModel=new CalendarModel();
+
+            calendarModel.setDate(mCal.getTime());
+            dayValueInCells.add(calendarModel);
             mCal.add(Calendar.DAY_OF_MONTH, 1);
         }
         Log.d(TAG, "Number of date " + dayValueInCells.size());

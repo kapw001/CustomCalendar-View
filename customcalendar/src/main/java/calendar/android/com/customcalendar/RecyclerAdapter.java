@@ -22,14 +22,14 @@ import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolders> {
 
-    private List<Date> monthlyDates;
+    private List<CalendarModel> monthlyDates;
     private Calendar currentDate;
     private List<EventObjects> allEvents;
     private Context context;
     private EventHighlight eventHighlight;
     private onItemClick mOnItemClick;
 
-    public RecyclerAdapter(Context context, List<Date> monthlyDates, Calendar currentDate, List<EventObjects> allEvents, EventHighlight eventHighlight, onItemClick onItemClick) {
+    public RecyclerAdapter(Context context, List<CalendarModel> monthlyDates, Calendar currentDate, List<EventObjects> allEvents, EventHighlight eventHighlight, onItemClick onItemClick) {
 
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
@@ -57,9 +57,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
 
 
-        Date mDate = monthlyDates.get(position);
+        CalendarModel mDate = monthlyDates.get(position);
         Calendar dateCal = Calendar.getInstance();
-        dateCal.setTime(mDate);
+        dateCal.setTime(mDate.getDate());
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -95,6 +95,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
 //        Log.e(TAG, "getView: " + allEvents.size());
 
+
         holder.event.setVisibility(View.GONE);
 
         for (int i = 0; i < allEvents.size(); i++) {
@@ -103,6 +104,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                     && displayYear == eventCalendar.get(Calendar.YEAR)) {
 //                holder.event.setBackgroundColor(allEvents.get(i).getColor());
 
+                monthlyDates.get(position).setChecked(true);
+                monthlyDates.get(position).setColor(allEvents.get(i).getColor());
 
                 switch (eventHighlight) {
                     case CIRCLE:
@@ -158,6 +161,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         @Override
         public void onClick(View view) {
 
+
+            monthlyDates.get(getAdapterPosition()).setChecked(!monthlyDates.get(getAdapterPosition()).isChecked());
+
+            if (monthlyDates.get(getAdapterPosition()).isChecked())
+//                itemView.setBackgroundColor(Color.GREEN);
+                itemView.setBackgroundColor(monthlyDates.get(getAdapterPosition()).getColor());
+            else {
+
+//                if (!monthlyDates.get(getAdapterPosition()).isChecked()) {
+//                    itemView.setBackgroundColor(monthlyDates.get(getAdapterPosition()).getColor());
+//                } else {
+                    itemView.setBackgroundColor(Color.WHITE);
+//                }
+            }
+
+
 //            switch (eventHighlight) {
 //                case CIRCLE:
 //                    event.setVisibility(View.VISIBLE);
@@ -168,7 +187,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 //            }
 
             if (mOnItemClick != null) {
-                mOnItemClick.onItemClick(view, getAdapterPosition(), monthlyDates.get(getAdapterPosition()));
+                mOnItemClick.onItemClick(view, getAdapterPosition(), monthlyDates);
             }
 
         }

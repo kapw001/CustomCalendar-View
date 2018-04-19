@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import calendar.android.com.customcalendar.CalendarCustomViewRecycler;
+import calendar.android.com.customcalendar.CalendarModel;
 import calendar.android.com.customcalendar.CalendarUtils;
 import calendar.android.com.customcalendar.EventHighlight;
 import calendar.android.com.customcalendar.EventObjects;
@@ -30,7 +31,7 @@ public class RecyclerviewActivity extends AppCompatActivity {
 
         CalendarCustomViewRecycler calendarCustomViewRecycler = (CalendarCustomViewRecycler) findViewById(R.id.custom_calendar);
 
-        calendarCustomViewRecycler.setEventHighlight(EventHighlight.CIRCLE);
+        calendarCustomViewRecycler.setEventHighlight(EventHighlight.RECTANGLE);
 
 
         final List<EventObjects> mEvents = new ArrayList<>();
@@ -58,15 +59,36 @@ public class RecyclerviewActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position, Object o) {
 
-                Date mDate = ((Date) o);
 
-                List<EventObjects> mList = CalendarUtils.getParticularDateEvents(mDate, mEvents);
+                List<CalendarModel> list = (List<CalendarModel>) o;
+                List<CalendarModel> checkedList = new ArrayList<CalendarModel>();
 
-
-                for (EventObjects objects : mList
+                for (CalendarModel c : list
                         ) {
 
-                    Log.e(TAG, "onItemClick: " + objects.getMessage());
+                    if (c.isChecked()) checkedList.add(c);
+                }
+
+
+//                Log.e(TAG, "onItemClick: " + checkedList.size());
+
+
+                for (CalendarModel calendarModel : checkedList
+                        ) {
+
+
+                    Date mDate = calendarModel.getDate();
+
+                    List<EventObjects> mList = CalendarUtils.getParticularDateEvents(mDate, mEvents);
+
+
+                    for (EventObjects objects : mList
+                            ) {
+
+                        Log.e(TAG, "onItemClick: " + objects.getMessage());
+                    }
+
+
                 }
 
 
